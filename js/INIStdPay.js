@@ -318,28 +318,20 @@ var INIStdPay = {
 
       INIStdPay.$modalDiv.modal('show');
     }
-
-
-
-
   },
   hide: function() {
-      INIStdPay.$modalDiv.modal('hide');
-    }
-    // 결제창 숨기기
-    ,
+    INIStdPay.$modalDiv.modal('hide');
+  },
+  // 결제창 숨기기
   viewOff: function() {
-
-      INIStdPay.$modalDiv.modal('hide');
-      INIStdPay.$modalDiv.remove();
-      INIStdPay.$modalDivMsg.modal('hide');
-      INIStdPay.$modalDivMsg.remove();
-      INIStdPay.$modalDivMsg2.modal('hide');
-      INIStdPay.$modalDivMsg2.remove();
-    }
-
-    // 결제창 숨기기
-    ,
+    INIStdPay.$modalDiv.modal('hide');
+    INIStdPay.$modalDiv.remove();
+    INIStdPay.$modalDivMsg.modal('hide');
+    INIStdPay.$modalDivMsg.remove();
+    INIStdPay.$modalDivMsg2.modal('hide');
+    INIStdPay.$modalDivMsg2.remove();
+  },
+  // 결제창 숨기기
   viewOffTriger: function() {
       INIStdPay.$iframe.attr("src", "");
       INIStdPay.INIModal_init(); // Modal 재 초기화
@@ -360,60 +352,57 @@ var INIStdPay = {
     // 결제창 호출
     ,
   pay: function(obj) {
-      INIStdPay.init();
+    INIStdPay.init();
 
-      //모바일 결제불가 처리
-      if (INIStdPay.boolMobile) {
-        INImsg.alert(INImsg.dev_err11);
+    //모바일 결제불가 처리
+    if (INIStdPay.boolMobile) {
+      INImsg.alert(INImsg.dev_err11);
+      return false;
+    }
+
+    INIStdPay.frmobj = obj;
+    if (INIStdPay.init_check("INIpaySubmit")) {
+
+      INIStdPay.vMethod = "POST";
+
+      if (!INIStdPay.formCheck(obj)) {
         return false;
-      }
-
-      INIStdPay.frmobj = obj;
-      if (INIStdPay.init_check("INIpaySubmit")) {
-
-        INIStdPay.vMethod = "POST";
-
-        if (!INIStdPay.formCheck(obj)) {
-          return false;
-        } else if (!INIStdPay.paramCheck(INIStdPay.$formObj)) {
-          return false;
-        } else {
-          if (INIStdPay.$formObj != null) {
-            INIStdPay.checkBoolView(INIStdPay.$formObj.serialize());
-          }
+      } else if (!INIStdPay.paramCheck(INIStdPay.$formObj)) {
+        return false;
+      } else {
+        if (INIStdPay.$formObj != null) {
+          INIStdPay.checkBoolView(INIStdPay.$formObj.serialize());
         }
       }
     }
-    // 테스트용 get 결제창 호출
-    ,
+  },
+
+  // 테스트용 get 결제창 호출
   payGet: function(obj) {
-      if (INIStdPay.init_check("INIpaySubmit")) {
-        INIStdPay.vMethod = "GET";
+    if (INIStdPay.init_check("INIpaySubmit")) {
+      INIStdPay.vMethod = "GET";
 
-        if (!INIStdPay.formCheck(obj)) {
-          return false;
-        } else if (!INIStdPay.paramCheck(INIStdPay.$formObj)) {
-          return false;
-        } else {
-          if (INIStdPay.$formObj != null) {
-            // 정보 조회후
-            INIStdPay.getBasicInfo("BASIC_INFO", INIStdPay.$formObj.serialize(), INIStdPay.submit);
-          }
+      if (!INIStdPay.formCheck(obj)) {
+        return false;
+      } else if (!INIStdPay.paramCheck(INIStdPay.$formObj)) {
+        return false;
+      } else {
+        if (INIStdPay.$formObj != null) {
+          // 정보 조회후
+          INIStdPay.getBasicInfo("BASIC_INFO", INIStdPay.$formObj.serialize(), INIStdPay.submit);
         }
       }
     }
+  },
 
-    // 체크용 URL로 전송
-    ,
+  // 체크용 URL로 전송
   payReqCheck: function(obj) {
-      INIStdPay.boolPayRequestCheck = true;
-      INIStdPay.pay(obj);
-    }
+    INIStdPay.boolPayRequestCheck = true;
+    INIStdPay.pay(obj);
+  },
 
-    // 결제창 POST 호출
-    ,
+  // 결제창 POST 호출
   submit: function(jsonData, status, jqXHR) {
-
     INIStdPay.submitBefore();
 
     // Direct option의 경우 popupType도 overlay처럼 진행 숨김
@@ -464,32 +453,21 @@ var INIStdPay = {
           clearInterval(INIStdPay.$stdPopupInterval);
           INIStdPay.popupClose();
         }
-
       }, 5000);
-
       return;
     }
   },
   popupCallback: function() {
-
     INIStdPay.$formObj.attr("target", "iniStdPayPopupIframe");
-
     INIStdPay.$formObj.submit();
     INIStdPay.submitAfter();
-
   },
   popupClose: function() {
-
-      INIStdPay.$modalDivMsg.modal('hide');
-      INIStdPay.$modalDivMsg.remove();
-
-      INIStdPay.viewOffTriger();
-
-    }
-
-    ,
+    INIStdPay.$modalDivMsg.modal('hide');
+    INIStdPay.$modalDivMsg.remove();
+    INIStdPay.viewOffTriger();
+  },
   submitBefore: function() {
-
     var $input;
 
     if ($jINI("input[name=requestByJs]").size() > 0) {
@@ -529,140 +507,121 @@ var INIStdPay = {
       } catch (e) {
         // TODO: handle exception
       }
-
     }
-
   },
   submitAfter: function() {
-      INIStdPay.$formObj = null;
+    INIStdPay.$formObj = null;
 
+    // 파라미더 테스트 전송 체크 상태 복귀
+    INIStdPay.boolPayRequestCheck = false;
+    INIStdPay.boolCard = false;
+    INIStdPay.boolHpp = false;
 
-      // 파라미더 테스트 전송 체크 상태 복귀
-      INIStdPay.boolPayRequestCheck = false;
-      INIStdPay.boolCard = false;
-      INIStdPay.boolHpp = false;
-
-      // charset 원상복구
-      if (document.all) {
-        try {
-          document.charset = INIStdPay.vPageCharset;
-        } catch (e) {
-          // TODO: handle exception
-        }
-
+    // charset 원상복구
+    if (document.all) {
+      try {
+        document.charset = INIStdPay.vPageCharset;
+      } catch (e) {
+        // TODO: handle exception
       }
-
     }
+  },
 
-    // 폼 객체 존재 여부체크
-    ,
+  // 폼 객체 존재 여부체크
   formCheck: function(obj) {
-
-      if ($jINI(obj).is("form")) {
-        INIStdPay.$formObj = $jINI(obj);
-      } else if ($jINI("#" + obj).is("form")) {
-        INIStdPay.$formObj = $jINI("#" + obj);
-      } else if ($jINI("[name=" + obj + "]").is("form")) {
-
-        if ($jINI("[name=" + obj + "]").size() > 1) {
-          INImsg.alert(INImsg.dev_err1);
-          return false;
-        }
-
-        INIStdPay.$formObj = $jINI("[name=" + obj + "]");
-
-      } else {
-        INImsg.alert(INImsg.dev_err2);
+    if ($jINI(obj).is("form")) {
+      INIStdPay.$formObj = $jINI(obj);
+    } else if ($jINI("#" + obj).is("form")) {
+      INIStdPay.$formObj = $jINI("#" + obj);
+    } else if ($jINI("[name=" + obj + "]").is("form")) {
+      if ($jINI("[name=" + obj + "]").size() > 1) {
+        INImsg.alert(INImsg.dev_err1);
         return false;
       }
-      return true;
+
+      INIStdPay.$formObj = $jINI("[name=" + obj + "]");
+    } else {
+      INImsg.alert(INImsg.dev_err2);
+      return false;
     }
+    return true;
+  },
 
-    // 파라미터 유효성 체크
-    ,
+  // 파라미터 유효성 체크
   paramCheck: function() {
+    var paramCheckStatus = true;
+    //var ParamHashValue = "";
 
-      var paramCheckStatus = true;
+    $jINI(paramList).each(function() {
 
-      //var ParamHashValue = "";
+      vName = this.split(":")[0];
 
-      $jINI(paramList).each(function() {
+      vType = this.split(":")[1].split(",")[0];
+      vLength = this.split(":")[1].split(",")[1];
 
-        vName = this.split(":")[0];
-
-        vType = this.split(":")[1].split(",")[0];
-        vLength = this.split(":")[1].split(",")[1];
-
-        $obj = INIStdPay.$formObj.find(":input[name=" + vName + "]");
+      $obj = INIStdPay.$formObj.find(":input[name=" + vName + "]");
 
 
-        // currency값이 "" 일경우 WON으로 강제 적용
-        if (vName == "currency" && $obj.val().length <= 0) {
-          INIStdPay.$formObj.find("[name=currency]").val("WON");
-        }
+      // currency값이 "" 일경우 WON으로 강제 적용
+      if (vName == "currency" && $obj.val().length <= 0) {
+        INIStdPay.$formObj.find("[name=currency]").val("WON");
+      }
 
-        // price 0인지 체크(빌링일 경우 제외)
-        if (vName == "price" && $obj.val() <= 0) {
-          var priceCheck = true;
-          var acceptmethod = INIStdPay.$formObj.find(":input[name=acceptmethod]").val();
+      // price 0인지 체크(빌링일 경우 제외)
+      if (vName == "price" && $obj.val() <= 0) {
+        var priceCheck = true;
+        var acceptmethod = INIStdPay.$formObj.find(":input[name=acceptmethod]").val();
 
-          if (acceptmethod != null) {
-            var beginIndex = acceptmethod.toLowerCase().indexOf("billauth(");
-            var temp = acceptmethod.substring(beginIndex + 9, acceptmethod.length);
-            var endIndex = temp.indexOf(")");
-            var billCheck = temp.substring(0, endIndex).toLowerCase();
+        if (acceptmethod != null) {
+          var beginIndex = acceptmethod.toLowerCase().indexOf("billauth(");
+          var temp = acceptmethod.substring(beginIndex + 9, acceptmethod.length);
+          var endIndex = temp.indexOf(")");
+          var billCheck = temp.substring(0, endIndex).toLowerCase();
 
-            if (billCheck.length > 0 && (billCheck == "card" || billCheck == "hpp")) {
-              priceCheck = false;
-            }
+          if (billCheck.length > 0 && (billCheck == "card" || billCheck == "hpp")) {
+            priceCheck = false;
           }
-          if (priceCheck) {
-            INImsg.alert(INImsg.dev_err4.replace("#", vName + "=" + $obj.val()));
+        }
+        if (priceCheck) {
+          INImsg.alert(INImsg.dev_err4.replace("#", vName + "=" + $obj.val()));
+          paramCheckStatus = false;
+          return false; // each중지용
+        }
+      }
+
+      if ($obj.size() <= 0) {
+        INImsg.alert(INImsg.dev_err3.replace("#", vName));
+        paramCheckStatus = false;
+        return false; // each중지용
+      } else if ($obj.val().length <= 0) {
+        INImsg.alert(INImsg.dev_err4.replace("#", vName));
+        paramCheckStatus = false;
+        return false; // each중지용
+      } else {
+        if (vLength.indexOf("~") >= 0) {
+
+          var vLengthStart = vLength.split("~")[0];
+          var vLengthEnd = vLength.split("~")[1];
+
+          if ($obj.val().length < Number(vLengthStart) || $obj.val().length > Number(vLengthEnd)) {
+            INImsg.alert(INImsg.dev_err5.replace("#1", vName).replace("#2", $obj.val()).replace("#3", $obj.val().length).replace("#4", vLength));
+            paramCheckStatus = false;
+            return false; // each중지용
+          }
+        } else {
+          if ($obj.val().length > Number(vLength)) {
+            INImsg.alert(INImsg.dev_err5.replace("#1", vName).replace("#2", $obj.val()).replace("#3", $obj.val().length).replace("#4", vLength));
             paramCheckStatus = false;
             return false; // each중지용
           }
         }
+      }
+    });
+    return paramCheckStatus;
+  },
 
-        if ($obj.size() <= 0) {
-          INImsg.alert(INImsg.dev_err3.replace("#", vName));
-          paramCheckStatus = false;
-          return false; // each중지용
-        } else if ($obj.val().length <= 0) {
-          INImsg.alert(INImsg.dev_err4.replace("#", vName));
-          paramCheckStatus = false;
-          return false; // each중지용
-        } else {
-          if (vLength.indexOf("~") >= 0) {
-
-            var vLengthStart = vLength.split("~")[0];
-            var vLengthEnd = vLength.split("~")[1];
-
-            if ($obj.val().length < Number(vLengthStart) || $obj.val().length > Number(vLengthEnd)) {
-              INImsg.alert(INImsg.dev_err5.replace("#1", vName).replace("#2", $obj.val()).replace("#3", $obj.val().length).replace("#4", vLength));
-              paramCheckStatus = false;
-              return false; // each중지용
-            }
-          } else {
-            if ($obj.val().length > Number(vLength)) {
-              INImsg.alert(INImsg.dev_err5.replace("#1", vName).replace("#2", $obj.val()).replace("#3", $obj.val().length).replace("#4", vLength));
-              paramCheckStatus = false;
-              return false; // each중지용
-            }
-          }
-
-        }
-
-      });
-
-      return paramCheckStatus;
-
-    }
-
-
-    // 정보 조회
-    ,
+  // 정보 조회
   getBasicInfo: function(type, paramJson, callback_f) {
-
     paramJson['callback'] = "?";
 
     $jINI.ajax({
@@ -679,12 +638,9 @@ var INIStdPay = {
     });
   },
   jsonpError: function(type, jqXHR, status, errorThrown) {
-
     INImsg.alert(INImsg.dev_err6);
-
   },
   checkBoolView: function(param) {
-
     var gopaymethod = INIStdPay.$formObj.find(":input[name=gopaymethod]").val().toLowerCase();
     var acceptmethod = INIStdPay.$formObj.find(":input[name=acceptmethod]").val();
     var cardCode = INIStdPay.$formObj.find(":input[name=ini_cardcode]").val();
@@ -774,7 +730,6 @@ var INIStdPay = {
       INIStdPay.submit();
     }
   }
-
 };
 
 var $JSImport = {
@@ -803,7 +758,6 @@ var $JSImport = {
         ieLoadBugFix(script, function() {
           callback();
         });
-
       }
 
       function ieLoadBugFix(scriptElement, callback) {

@@ -1398,8 +1398,12 @@ function forderform_check(f)
 
     // XPAY 지불
     if(settle_method == "XPAY") {
-        axios.post('http://121.140.119.11:4000/api/v1/trade/pamt_init', {
+        //axios.post('http://121.140.119.11:4000/api/v1/trade/pamt_init', {
+        axios.post('http://127.0.0.1:4000/api/v1/trade/pamt_init', {
             'amount': tot_price,
+            'return_url': 'http://127.0.0.1:8888/yc51/shop/xpay/xpay_return.php',
+            'shop_order_id': '<?php echo $s_cart_id ?>',
+            'shop_data': '{\"od_send_cost\": 1500,\"od_send_cost2\": 1000}',
         }, {
             headers: {
                 'Content-Type': 'application/json',
